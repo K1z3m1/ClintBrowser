@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.PowerManager
 import android.provider.Settings
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.MainActivity
 import com.jhaiian.clint.downloads.ClintDownloadManager

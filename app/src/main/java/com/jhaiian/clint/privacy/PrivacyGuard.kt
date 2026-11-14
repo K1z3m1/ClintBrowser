@@ -12,7 +12,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.view.WindowManager
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import android.annotation.SuppressLint
 import android.webkit.CookieManager
 import android.webkit.WebStorage

@@ -3,7 +3,7 @@ package com.jhaiian.clint.browser.delegates
 import android.content.Intent
 import android.net.Uri
 import android.webkit.WebView
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.MainActivity
 import com.jhaiian.clint.downloads.ClintDownloadManager

@@ -247,7 +247,7 @@ fun TabMenuScreen(activity: MainActivity, onDismiss: () -> Unit) {
     val tabs = remember { mutableStateListOf<TabPreview>().apply { addAll(tabManager.previews()) } }
     val groups = remember { mutableStateListOf<TabGroup>().apply { addAll(tabManager.groups) } }
     var activeTabId by remember { mutableStateOf(tabManager.activeTab?.id) }
-    val prefs = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(activity) }
+    val prefs = remember { com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(activity) }
     val hideStatusBar = remember { prefs.getBoolean("hide_status_bar", false) }
     val hideSystemNavigation = remember { prefs.getBoolean("hide_system_navigation", false) }
     var showGroupBar by remember { mutableStateOf(prefs.getBoolean(TabGroupPrefs.PREF_SHOW_GROUP_BAR, true)) }

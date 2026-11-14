@@ -6,7 +6,7 @@ import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionDatabase

@@ -2,7 +2,7 @@ package com.jhaiian.clint.browser.webview
 
 import android.content.Context
 import android.webkit.WebSettings
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import androidx.webkit.UserAgentMetadata
 
 object GenericUserAgent {

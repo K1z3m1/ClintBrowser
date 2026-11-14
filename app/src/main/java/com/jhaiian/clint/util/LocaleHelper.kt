@@ -3,7 +3,6 @@ package com.jhaiian.clint.util
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
-import androidx.preference.PreferenceManager
 import java.util.Locale
 
 object LocaleHelper {

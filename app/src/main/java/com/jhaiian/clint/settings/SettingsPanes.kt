@@ -36,7 +36,7 @@ import androidx.core.content.pm.PackageInfoCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.BuildConfig
 import com.jhaiian.clint.R
 import com.jhaiian.clint.crash.CrashHandler

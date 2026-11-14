@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import com.jhaiian.clint.tabs.BrowserTab
 import com.jhaiian.clint.profiles.WebProfiles
 import com.jhaiian.clint.tabs.InactiveTabsPolicy
+import com.jhaiian.clint.tabs.LowRamMode
 import com.jhaiian.clint.tabs.SavedTab
 import com.jhaiian.clint.tabs.TabGroupPrefs
 import com.jhaiian.clint.tabs.TabSessionManager
@@ -291,8 +292,12 @@ internal fun MainActivity.openNewTabInBackground(url: String, openerTabId: Strin
             showPopupAlertDialog(newUrl, tab.isIncognito, tab.id)
         }
     )
-    prepareCacheForNavigation(tab, url)
-    webView.loadUrl(url)
+    if (LowRamMode.isEnabled(prefs)) {
+        tab.pendingUrl = url
+    } else {
+        prepareCacheForNavigation(tab, url)
+        webView.loadUrl(url)
+    }
     updateTabCount()
 }
 
@@ -396,7 +401,9 @@ internal fun MainActivity.attachActiveWebView() {
     tab.pendingUrl?.let { pending ->
         tab.pendingUrl = null
         prepareCacheForNavigation(tab, pending)
-        tab.webView.loadUrl(pending)
+        val saved = tab.savedState
+        tab.savedState = null
+        if (saved == null || tab.webView.restoreState(saved) == null) tab.webView.loadUrl(pending)
     }
     updateIncognitoState(tab.isIncognito)
     uiState.activeTabId = tab.id
@@ -424,11 +431,39 @@ internal fun MainActivity.attachActiveWebView() {
     syncTabPlayback()
 }
 
+private fun MainActivity.isRealUrl(url: String?): Boolean = !url.isNullOrEmpty() && url != "about:blank"
+
+private fun MainActivity.canUnloadTab(tab: BrowserTab, activeId: String?): Boolean =
+    tab.id != activeId &&
+        tab.pendingUrl == null &&
+        !tab.isRefreshLinkTab &&
+        !tabManager.isGhostTab(tab) &&
+        !backgroundPlaybackTracker.isPlaying(tab.id) &&
+        !keepsMediaAlive(tab.webView) &&
+        (isRealUrl(tab.webView.url) || isRealUrl(tab.url))
+
+/** Low RAM mode: drop the page of a background tab but keep the tab, its URL and its history. */
+internal fun MainActivity.unloadTab(tab: BrowserTab) {
+    val webView = tab.webView
+    val url = webView.url?.takeIf { isRealUrl(it) } ?: tab.url.takeIf { isRealUrl(it) } ?: return
+    val state = android.os.Bundle()
+    if (webView.saveState(state) == null) return
+    tab.savedState = state
+    tab.url = url
+    tab.pendingUrl = url
+    webView.stopLoading()
+    webView.loadUrl("about:blank")
+    webView.onPause()
+}
+
 internal fun MainActivity.syncTabPlayback() {
     val activeId = tabManager.activeTab?.id
+    val lowRam = LowRamMode.isEnabled(prefs)
     tabManager.tabs.forEach { tab ->
         if (tab.id == activeId) {
             tab.webView.onResume()
+        } else if (lowRam && canUnloadTab(tab, activeId)) {
+            unloadTab(tab)
         } else if (tab.pendingUrl == null && !backgroundPlaybackTracker.isPlaying(tab.id)) {
             tab.webView.evaluateJavascript(com.jhaiian.clint.browser.webview.TabMediaControl.PAUSE_SCRIPT, null)
             tab.webView.onPause()

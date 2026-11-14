@@ -130,7 +130,7 @@ internal fun MegaDownloadDialog(
 ) {
     val context = LocalContext.current
     val colors = LocalClintColors.current
-    val prefs = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context) }
+    val prefs = remember { com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(context) }
     var state by remember { mutableStateOf<MegaDialogState>(MegaDialogState.Loading) }
     var attempt by remember { mutableIntStateOf(0) }
 

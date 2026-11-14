@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.base.ClintActivity
 import com.jhaiian.clint.blocker.additional.AdditionalWebsitesActivity
 import com.jhaiian.clint.blocker.additional.AdditionalWebsitesDatabase

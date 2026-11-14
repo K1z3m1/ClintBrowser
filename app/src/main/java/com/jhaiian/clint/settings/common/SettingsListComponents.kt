@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -53,6 +54,7 @@ import com.jhaiian.clint.ui.theme.LocalClintColors
 @Composable
 fun SettingsScreenScaffold(
     overlay: @Composable () -> Unit = {},
+    header: (@Composable () -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = LocalClintColors.current
@@ -60,14 +62,34 @@ fun SettingsScreenScaffold(
         val maxContentWidth = rememberMaxContentWidth(LocalContext.current)
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
             CompositionLocalProvider(LocalSettingsDividerInset provides SettingsRowDividerInset) {
-                Column(
-                    Modifier
-                        .then(if (maxContentWidth != null) Modifier.widthIn(max = maxContentWidth) else Modifier.fillMaxWidth())
-                        .verticalScroll(rememberScrollState())
-                        .navigationBarsPadding()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
-                    content = content
-                )
+                val widthModifier = if (maxContentWidth != null) Modifier.widthIn(max = maxContentWidth) else Modifier.fillMaxWidth()
+                if (header == null) {
+                    Column(
+                        Modifier
+                            .then(widthModifier)
+                            .verticalScroll(rememberScrollState())
+                            .navigationBarsPadding()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 24.dp),
+                        content = content
+                    )
+                } else {
+                    Column(
+                        Modifier
+                            .then(widthModifier)
+                            .fillMaxHeight()
+                            .padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                    ) {
+                        header()
+                        Column(
+                            Modifier
+                                .weight(1f)
+                                .verticalScroll(rememberScrollState())
+                                .navigationBarsPadding()
+                                .padding(top = 8.dp, bottom = 24.dp),
+                            content = content
+                        )
+                    }
+                }
             }
         }
         overlay()

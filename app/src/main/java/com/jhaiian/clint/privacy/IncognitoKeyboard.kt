@@ -9,7 +9,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.InterceptPlatformTextInput
 import androidx.compose.ui.platform.PlatformTextInputMethodRequest
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 
 object IncognitoKeyboard {
 

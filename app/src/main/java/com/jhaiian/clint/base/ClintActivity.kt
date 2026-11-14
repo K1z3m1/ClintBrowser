@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.app.ClintApplication
 import com.jhaiian.clint.ui.ThemeRevealHolder
 import com.jhaiian.clint.ui.ThemeRevealOverlay

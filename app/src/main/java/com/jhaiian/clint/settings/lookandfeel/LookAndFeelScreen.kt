@@ -55,6 +55,7 @@ fun LookAndFeelScreen(
     val intensityEnabled = ThemeSwatchUtils.isSurfaceIntensityEnabled(state.theme, state.accent)
 
     SettingsScreenScaffold(
+        header = { LookAndFeelPreview(state) { dialog -> state.openDialog = dialog } },
         overlay = {
             when (state.openDialog) {
                 LookAndFeelDialog.THEME -> ThemeSelectorDialog(

@@ -9,7 +9,7 @@ import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import androidx.compose.material3.SnackbarHostState
 import com.jhaiian.clint.base.ClintActivity
 import com.jhaiian.clint.ui.ClintSnackbarHost

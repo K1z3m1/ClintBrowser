@@ -5,7 +5,7 @@ import android.Manifest
 import android.webkit.GeolocationPermissions
 import android.webkit.PermissionRequest
 import androidx.core.content.ContextCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionDatabase
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionManager

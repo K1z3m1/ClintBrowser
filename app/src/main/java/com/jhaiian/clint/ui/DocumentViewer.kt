@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.os.Handler
 import android.os.Looper
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.ui.theme.ClintComposeTheme
 import okhttp3.OkHttpClient
 import okhttp3.Request

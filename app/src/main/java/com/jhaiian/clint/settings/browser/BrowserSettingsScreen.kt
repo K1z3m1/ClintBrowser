@@ -35,6 +35,8 @@ import androidx.compose.material.icons.filled.VisibilityOff
 
 import com.jhaiian.clint.ui.ClintSwitch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.common.SettingsRow
@@ -286,6 +288,25 @@ fun BrowserSettingsScreen(
 
         SettingsSectionLabel(stringResource(R.string.pref_category_tabs))
         SettingsSection(colors.cardBackground) {
+            val lowRamContext = androidx.compose.ui.platform.LocalContext.current
+            var lowRamMode by androidx.compose.runtime.remember {
+                androidx.compose.runtime.mutableStateOf(
+                    com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(lowRamContext)
+                        .getBoolean(com.jhaiian.clint.tabs.LowRamMode.PREF_LOW_RAM_MODE, false)
+                )
+            }
+            SettingsRow(
+                icon = androidx.compose.material.icons.Icons.Filled.Memory,
+                title = stringResource(R.string.low_ram_mode_title),
+                summary = stringResource(R.string.low_ram_mode_summary),
+                colors = colors,
+                onClick = {
+                    lowRamMode = !lowRamMode
+                    com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(lowRamContext).edit()
+                        .putBoolean(com.jhaiian.clint.tabs.LowRamMode.PREF_LOW_RAM_MODE, lowRamMode).apply()
+                },
+                trailing = { ClintSwitch(checked = lowRamMode) }
+            )
             SettingsRow(
                 icon = androidx.compose.material.icons.Icons.Filled.AutoDelete,
                 title = stringResource(R.string.delete_inactive_tabs_title),

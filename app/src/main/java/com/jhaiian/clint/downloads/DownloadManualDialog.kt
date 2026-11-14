@@ -257,7 +257,7 @@ fun DownloadManualDialog(
     val activity = context as DownloadsActivity
     val colors = LocalClintColors.current
     val scope = rememberCoroutineScope()
-    val prefs = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(context) }
+    val prefs = remember { com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(context) }
 
     var url by remember { mutableStateOf(prefillUrl ?: "") }
     var isFetching by remember { mutableStateOf(false) }

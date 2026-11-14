@@ -7,7 +7,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.DocumentsContract
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.downloads.mega.MegaApi
 import com.jhaiian.clint.downloads.mega.MegaCtrDecryptor

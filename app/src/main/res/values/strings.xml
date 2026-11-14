@@ -18,6 +18,9 @@
     <string name="browser_settings">Browser</string>
     <string name="browser_settings_summary">Search, homepage, tabs, user scripts, website blocker, and custom prompts</string>
     <string name="pref_category_appearance">Appearance</string>
+    <string name="look_feel_preview_title">Live preview</string>
+    <string name="look_feel_preview_page">Page</string>
+    <string name="look_feel_preview_alert">Alert</string>
     <string name="pref_category_layout">Layout</string>
     <string name="pref_category_search">Search</string>
     <string name="pref_category_protection">Content Blocker</string>
@@ -29,6 +32,8 @@
     <string name="pref_category_tools">Tools</string>
     <string name="pref_category_address_bar">Address bar</string>
     <string name="pref_category_fullscreen">Full screen</string>
+    <string name="low_ram_mode_title">Low RAM mode</string>
+    <string name="low_ram_mode_summary">Load only the tab you are viewing. Other tabs stay in the list and reload when you open them</string>
     <string name="delete_inactive_tabs_title">Delete Inactive Tabs</string>
     <string name="delete_inactive_tabs_dialog_desc">Tabs you haven\'t opened for this long are closed automatically. The tab you\'re viewing and tabs from frameless shortcuts are never closed.</string>
     <string name="delete_inactive_tabs_summary_never">Never</string>

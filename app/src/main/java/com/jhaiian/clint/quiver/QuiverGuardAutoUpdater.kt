@@ -1,7 +1,7 @@
 package com.jhaiian.clint.quiver
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import androidx.work.Constraints
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy

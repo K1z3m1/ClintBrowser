@@ -3,7 +3,7 @@ package com.jhaiian.clint.shortcuts
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.profiles.WebProfiles
 
 internal class ShortcutDatabase(context: Context) :

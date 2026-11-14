@@ -2,7 +2,7 @@ package com.jhaiian.clint.browser.delegates
 import com.jhaiian.clint.browser.MainActivity
 
 import android.webkit.WebView
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionDatabase
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionManager

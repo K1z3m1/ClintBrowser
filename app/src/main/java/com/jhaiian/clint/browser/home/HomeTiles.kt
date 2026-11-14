@@ -16,7 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.caverock.androidsvg.SVG
 import com.jhaiian.clint.bookmarks.BookmarkManager
 import com.jhaiian.clint.settings.datasaver.DataSaverMode

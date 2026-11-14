@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.core.view.WindowCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.base.ClintActivity
 import com.jhaiian.clint.quiver.UpdateProgressDialog
 import com.jhaiian.clint.quiver.UpdateResultDialog

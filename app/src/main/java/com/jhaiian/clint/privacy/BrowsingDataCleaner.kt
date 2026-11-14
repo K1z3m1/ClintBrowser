@@ -3,7 +3,7 @@ package com.jhaiian.clint.privacy
 import android.content.Context
 import android.net.Uri
 import android.webkit.GeolocationPermissions
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.history.SearchHistoryManager
 import com.jhaiian.clint.settings.datasaver.DataSaverSiteException
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionManager

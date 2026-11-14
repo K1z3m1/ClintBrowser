@@ -40,8 +40,6 @@ private const val MARKWON_URL = "https://github.com/noties/Markwon"
 private const val ANDROIDX_URL = "https://developer.android.com/jetpack/androidx"
 private const val MATERIAL_URL = "https://github.com/material-components/material-components-android"
 private const val OKHTTP_URL = "https://github.com/square/okhttp"
-private const val SIMPLEMAGIC_URL = "https://github.com/j256/simplemagic"
-private const val SIMPLEMAGIC_LICENSE_URL = "https://opensource.org/licenses/ISC"
 private const val ANDROIDSVG_URL = "https://github.com/BigBadaboom/androidsvg"
 private const val COROUTINES_URL = "https://github.com/Kotlin/kotlinx.coroutines"
 private const val ADBLOCK_RUST_URL = "https://github.com/brave/adblock-rust"
@@ -295,12 +293,6 @@ fun AboutScreen(
                 stringResource(R.string.about_library_okhttp_label), stringResource(R.string.about_library_okhttp_license),
                 stringResource(R.string.about_library_okhttp_usage), colors,
                 { onLinkClick(OKHTTP_URL) }, { onLinkClick(APACHE_2_LICENSE_URL) }
-            )
-            AboutThinDivider(colors.surfaceVariant)
-            AboutLibraryEntry(
-                stringResource(R.string.about_library_simplemagic_label), stringResource(R.string.about_library_simplemagic_license),
-                stringResource(R.string.about_library_simplemagic_usage), colors,
-                { onLinkClick(SIMPLEMAGIC_URL) }, { onLinkClick(SIMPLEMAGIC_LICENSE_URL) }
             )
             AboutThinDivider(colors.surfaceVariant)
             AboutLibraryEntry(
