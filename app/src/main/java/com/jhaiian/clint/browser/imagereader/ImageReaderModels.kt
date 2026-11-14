@@ -11,7 +11,7 @@ data class NavTarget(val href: String?, val clickPath: String?, val text: String
 
 data class ReaderNav(val next: NavTarget?, val prev: NavTarget?, val home: NavTarget?)
 
-data class PageExtract(val title: String, val url: String, val images: List<String>, val nav: ReaderNav, val fallbacks: List<String> = emptyList())
+data class PageExtract(val title: String, val url: String, val images: List<String>, val nav: ReaderNav, val fallbacks: List<String> = emptyList(), val pages: List<String> = emptyList())
 
 data class ChapterListItem(val title: String, val url: String)
 
@@ -40,12 +40,16 @@ object ImageReaderParser {
         val fbArr = o.optJSONArray("fallbacks")
         val fallbacks = ArrayList<String>()
         for (i in 0 until images.size) fallbacks.add(fbArr?.optString(i).orEmpty())
+        val pgArr = o.optJSONArray("pages")
+        val pages = ArrayList<String>()
+        for (i in 0 until images.size) pages.add(pgArr?.optString(i).orEmpty())
         val nav = o.optJSONObject("nav")
         return PageExtract(
             title = o.optString("title"),
             url = o.optString("url"),
             images = images,
             fallbacks = fallbacks,
+            pages = pages,
             nav = ReaderNav(
                 next = target(nav?.optJSONObject("next")),
                 prev = target(nav?.optJSONObject("prev")),
@@ -98,6 +102,7 @@ object ImageReaderJson {
 object ImageReaderShell {
 
     const val PREF_AUTO_NEXT = "image_reader_auto_next"
+    const val PREF_HD = "image_reader_hd"
 
     fun build(context: Context, first: PageExtract, isDark: Boolean): String {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -113,6 +118,7 @@ object ImageReaderShell {
             .put("autoNext", context.getString(R.string.image_reader_auto_next))
         val init = JSONObject()
             .put("autoNext", prefs.getBoolean(PREF_AUTO_NEXT, true))
+            .put("hd", prefs.getBoolean(PREF_HD, false))
             .put("labels", labels)
             .put("chapter", ImageReaderJson.chapter(1, "replace", first))
         val template = context.assets.open("JavaScript/image_reader_shell.html").bufferedReader().use { it.readText() }
