@@ -959,6 +959,34 @@ td,th{border:1px solid $secondaryColor;padding:6px 8px;}
         }
     }
 
+    fun onMenuImageReaderMode() {
+        val wv = tabManager.activeTab?.webView ?: return
+        val pageUrl = wv.url ?: return
+        val js = assets.open("JavaScript/image_reader_mode.js").bufferedReader().use { it.readText() }
+        wv.evaluateJavascript(js) { raw ->
+            if (isFinishing) return@evaluateJavascript
+            val extract = com.jhaiian.clint.browser.imagereader.ImageReaderParser.decodeJsResult(raw)
+                ?.let { com.jhaiian.clint.browser.imagereader.ImageReaderParser.parseExtract(it) }
+            if (extract == null || extract.images.isEmpty()) {
+                runOnUiThread { Toast.makeText(this, R.string.image_reader_no_images, Toast.LENGTH_SHORT).show() }
+                return@evaluateJavascript
+            }
+            val first = extract.copy(url = extract.url.ifEmpty { pageUrl })
+            val prefs = com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(this)
+            val theme = prefs.getString("app_theme", "system") ?: "system"
+            val isDark = !ThemeMode.isLight(theme)
+            val launch = com.jhaiian.clint.browser.imagereader.ImageReaderLaunch(
+                first = first,
+                userAgent = wv.settings.userAgentString.orEmpty(),
+                profileId = com.jhaiian.clint.profiles.WebProfiles.profileOf(wv)
+            )
+            val html = com.jhaiian.clint.browser.imagereader.ImageReaderShell.build(this, first, isDark)
+            runOnUiThread {
+                uiState.contentPreviewRequest = com.jhaiian.clint.browser.sheets.ContentPreviewRequest.forImageReader(pageUrl, first.title, html, launch)
+            }
+        }
+    }
+
     inner class NestedScrollBridge {
         @android.webkit.JavascriptInterface
         fun onNestedScroll(active: Boolean) {

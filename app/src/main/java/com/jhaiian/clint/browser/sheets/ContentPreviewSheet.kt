@@ -2,6 +2,7 @@ package com.jhaiian.clint.browser.sheets
 import com.jhaiian.clint.ui.theme.SystemDarkState
 import androidx.compose.material.icons.automirrored.filled.ChromeReaderMode
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.Public
 
@@ -58,6 +59,7 @@ import androidx.webkit.WebViewCompat
 import androidx.webkit.WebViewFeature
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.MainActivity
+import com.jhaiian.clint.browser.imagereader.ImageReaderSession
 import com.jhaiian.clint.browser.webview.ClintWebViewClient
 import com.jhaiian.clint.browser.webview.loadJsAsset
 import com.jhaiian.clint.quiver.engine.BlockedRequestCounter
@@ -74,14 +76,19 @@ data class ContentPreviewRequest(
     val isPage: Boolean,
     val isDesktop: Boolean = false,
     val isReaderMode: Boolean = false,
+    val imageReader: com.jhaiian.clint.browser.imagereader.ImageReaderLaunch? = null,
     val readerHtml: String = "",
     val readerTitle: String = ""
 ) {
+    val isImageReader: Boolean get() = imageReader != null
+
     companion object {
         fun forImage(imageUrl: String) = ContentPreviewRequest(url = imageUrl, isPage = false)
         fun forPage(pageUrl: String, isDesktop: Boolean) = ContentPreviewRequest(url = pageUrl, isPage = true, isDesktop = isDesktop)
         fun forReaderMode(pageUrl: String, pageTitle: String, html: String) =
             ContentPreviewRequest(url = pageUrl, isPage = false, isReaderMode = true, readerHtml = html, readerTitle = pageTitle)
+        fun forImageReader(pageUrl: String, pageTitle: String, html: String, launch: com.jhaiian.clint.browser.imagereader.ImageReaderLaunch) =
+            ContentPreviewRequest(url = pageUrl, isPage = false, isReaderMode = true, imageReader = launch, readerHtml = html, readerTitle = pageTitle)
     }
 }
 
@@ -101,6 +108,8 @@ internal fun ContentPreviewSheet(request: ContentPreviewRequest, activity: MainA
     var favicon by remember { mutableStateOf<Bitmap?>(null) }
     var webViewRef by remember { mutableStateOf<WebView?>(null) }
     var webViewScrollY by remember { mutableIntStateOf(0) }
+    var readerSession by remember { mutableStateOf<ImageReaderSession?>(null) }
+    var readerUrl by remember { mutableStateOf<String?>(null) }
 
     var nestedImageRequest by remember { mutableStateOf<ImageLongPressRequest?>(null) }
     var nestedPreviewLinkRequest by remember { mutableStateOf<PreviewLinkLongPressRequest?>(null) }
@@ -118,6 +127,7 @@ internal fun ContentPreviewSheet(request: ContentPreviewRequest, activity: MainA
 
     androidx.compose.runtime.DisposableEffect(Unit) {
         onDispose {
+            readerSession?.destroy()
             webViewRef?.destroy()
             BlockedRequestCounter.removeTab(quiverGuardPreviewTabId)
         }
@@ -142,7 +152,7 @@ internal fun ContentPreviewSheet(request: ContentPreviewRequest, activity: MainA
                         Image(favicon!!.asImageBitmap(), contentDescription = null, modifier = Modifier.size(20.dp))
                     } else {
                         Icon(
-                            if (request.isReaderMode) androidx.compose.material.icons.Icons.AutoMirrored.Filled.ChromeReaderMode else androidx.compose.material.icons.Icons.Filled.Public,
+                            if (request.isImageReader) androidx.compose.material.icons.Icons.Filled.PhotoLibrary else if (request.isReaderMode) androidx.compose.material.icons.Icons.AutoMirrored.Filled.ChromeReaderMode else androidx.compose.material.icons.Icons.Filled.Public,
                             contentDescription = null,
                             tint = colors.iconTint,
                             modifier = Modifier.size(20.dp)
@@ -153,7 +163,7 @@ internal fun ContentPreviewSheet(request: ContentPreviewRequest, activity: MainA
                         Text(urlText, color = colors.secondaryText, fontSize = 11.sp, maxLines = 1)
                     }
                     IconButton(onClick = {
-                        val currentUrl = if (request.isPage) webViewRef?.url?.takeIf { it.isNotEmpty() } ?: request.url else request.url
+                        val currentUrl = if (request.isPage) webViewRef?.url?.takeIf { it.isNotEmpty() } ?: request.url else readerUrl ?: request.url
                         onDismiss()
                         activity.onPreviewOpenInNewTab(currentUrl)
                     }, modifier = Modifier.size(44.dp)) {
@@ -177,7 +187,14 @@ internal fun ContentPreviewSheet(request: ContentPreviewRequest, activity: MainA
                     onTitleChanged = { titleText = it },
                     onUrlChanged = { urlText = it },
                     onImageLongPress = { nestedImageRequest = it },
-                    onPreviewLinkLongPress = { nestedPreviewLinkRequest = it }
+                    onPreviewLinkLongPress = { nestedPreviewLinkRequest = it },
+                    onReaderSession = { readerSession = it },
+                    onReaderVisible = { title, url ->
+                        if (title.isNotEmpty()) titleText = title
+                        readerUrl = url
+                        val h = runCatching { java.net.URL(url).host }.getOrElse { "" }
+                        if (h.isNotEmpty()) urlText = h
+                    }
                 )
             }
         }
@@ -203,7 +220,9 @@ private fun PreviewWebView(
     onTitleChanged: (String) -> Unit,
     onUrlChanged: (String) -> Unit,
     onImageLongPress: (ImageLongPressRequest) -> Unit,
-    onPreviewLinkLongPress: (PreviewLinkLongPressRequest) -> Unit
+    onPreviewLinkLongPress: (PreviewLinkLongPressRequest) -> Unit,
+    onReaderSession: (ImageReaderSession) -> Unit,
+    onReaderVisible: (String, String) -> Unit
 ) {
 
     val systemDark = SystemDarkState.isDark
@@ -221,10 +240,22 @@ private fun PreviewWebView(
                     val wv = WebView(ctx)
                     onWebViewCreated(wv)
 
+                    request.imageReader?.let { launch ->
+                        val session = ImageReaderSession(
+                            activity = activity,
+                            reader = wv,
+                            start = launch,
+                            visibleCallback = onReaderVisible,
+                            onOpenInTab = { url -> activity.onPreviewLinkOpenInCurrentTab(url) }
+                        )
+                        wv.addJavascriptInterface(session.bridge, ImageReaderSession.JS_NAME)
+                        onReaderSession(session)
+                    }
+
                     QuiverGuardWebIntegration.attach(ctx, wv) { quiverGuardPreviewTabId }
 
                     wv.settings.apply {
-                        javaScriptEnabled = request.isPage
+                        javaScriptEnabled = request.isPage || request.isImageReader
                         builtInZoomControls = true
                         displayZoomControls = false
                         loadWithOverviewMode = true

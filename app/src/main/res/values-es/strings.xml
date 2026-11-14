@@ -505,6 +505,18 @@
     <string name="menu_bookmarks">Marcadores</string>
     <string name="menu_history">Historial</string>
     <string name="reader_mode">Modo lectura</string>
+    <string name="image_reader_mode">Modo lectura de imágenes</string>
+    <string name="image_reader_no_images">No se encontraron imágenes en esta página</string>
+    <string name="image_reader_prev">Capítulo anterior</string>
+    <string name="image_reader_next">Capítulo siguiente</string>
+    <string name="image_reader_chapters">Capítulos</string>
+    <string name="image_reader_loading">Cargando…</string>
+    <string name="image_reader_no_next">No se encontró el capítulo siguiente</string>
+    <string name="image_reader_no_prev">No se encontró el capítulo anterior</string>
+    <string name="image_reader_load_failed">No se pudo cargar este capítulo</string>
+    <string name="image_reader_no_chapters">No se encontró la lista de capítulos</string>
+    <string name="image_reader_open_in_browser">Abrir en el navegador</string>
+    <string name="image_reader_auto_next">Cargar siguiente capítulo automáticamente</string>
 
     <string name="action_ok">Aceptar</string>
     <string name="action_add">Agregar</string>

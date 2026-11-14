@@ -503,6 +503,18 @@
     <string name="menu_bookmarks">बुकमार्क</string>
     <string name="menu_history">इतिहास</string>
     <string name="reader_mode">रीडर मोड</string>
+    <string name="image_reader_mode">इमेज रीडर मोड</string>
+    <string name="image_reader_no_images">इस पेज पर कोई इमेज नहीं मिली</string>
+    <string name="image_reader_prev">पिछला चैप्टर</string>
+    <string name="image_reader_next">अगला चैप्टर</string>
+    <string name="image_reader_chapters">चैप्टर</string>
+    <string name="image_reader_loading">लोड हो रहा है…</string>
+    <string name="image_reader_no_next">अगला चैप्टर नहीं मिला</string>
+    <string name="image_reader_no_prev">पिछला चैप्टर नहीं मिला</string>
+    <string name="image_reader_load_failed">यह चैप्टर लोड नहीं हो सका</string>
+    <string name="image_reader_no_chapters">चैप्टर सूची नहीं मिली</string>
+    <string name="image_reader_open_in_browser">ब्राउज़र में खोलें</string>
+    <string name="image_reader_auto_next">अगला चैप्टर अपने-आप लोड करें</string>
 
     <string name="action_ok">ठीक है</string>
     <string name="action_add">जोड़ें</string>

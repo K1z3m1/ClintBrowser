@@ -509,6 +509,18 @@
     <string name="menu_bookmarks">Закладки</string>
     <string name="menu_history">История</string>
     <string name="reader_mode">Режим чтения</string>
+    <string name="image_reader_mode">Режим чтения изображений</string>
+    <string name="image_reader_no_images">На этой странице не найдено изображений</string>
+    <string name="image_reader_prev">Предыдущая глава</string>
+    <string name="image_reader_next">Следующая глава</string>
+    <string name="image_reader_chapters">Главы</string>
+    <string name="image_reader_loading">Загрузка…</string>
+    <string name="image_reader_no_next">Следующая глава не найдена</string>
+    <string name="image_reader_no_prev">Предыдущая глава не найдена</string>
+    <string name="image_reader_load_failed">Не удалось загрузить эту главу</string>
+    <string name="image_reader_no_chapters">Список глав не найден</string>
+    <string name="image_reader_open_in_browser">Открыть в браузере</string>
+    <string name="image_reader_auto_next">Автозагрузка следующей главы</string>
 
     <string name="action_ok">ОК</string>
     <string name="action_add">Добавить</string>

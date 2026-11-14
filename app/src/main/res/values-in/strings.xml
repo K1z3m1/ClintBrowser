@@ -500,6 +500,18 @@
     <string name="menu_bookmarks">Bookmark</string>
     <string name="menu_history">Histori</string>
     <string name="reader_mode">Mode Baca</string>
+    <string name="image_reader_mode">Mode Baca Gambar</string>
+    <string name="image_reader_no_images">Tidak ada gambar di halaman ini</string>
+    <string name="image_reader_prev">Bab sebelumnya</string>
+    <string name="image_reader_next">Bab berikutnya</string>
+    <string name="image_reader_chapters">Daftar bab</string>
+    <string name="image_reader_loading">Memuat…</string>
+    <string name="image_reader_no_next">Bab berikutnya tidak ditemukan</string>
+    <string name="image_reader_no_prev">Bab sebelumnya tidak ditemukan</string>
+    <string name="image_reader_load_failed">Gagal memuat bab ini</string>
+    <string name="image_reader_no_chapters">Daftar bab tidak ditemukan</string>
+    <string name="image_reader_open_in_browser">Buka di browser</string>
+    <string name="image_reader_auto_next">Muat otomatis bab berikutnya</string>
 
     <string name="action_ok">OK</string>
     <string name="action_add">Tambah</string>
