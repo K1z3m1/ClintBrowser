@@ -40,7 +40,10 @@ internal class ImageReaderSession(
         const val JS_NAME = "ClintReader"
     }
 
-    private class ChapterRecord(val id: Int, var ex: PageExtract)
+    private class ChapterRecord(val id: Int, var ex: PageExtract) {
+        val firstSeen: String? = ex.images.firstOrNull()
+        var hdTried = false
+    }
 
     private val main = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
     private val records = LinkedHashMap<Int, ChapterRecord>()
@@ -54,6 +57,8 @@ internal class ImageReaderSession(
     private val userAgent = start.userAgent
     private val profileId = start.profileId
     private val prefs = PreferenceManager.getDefaultSharedPreferences(activity)
+    private var hdEnabled = prefs.getBoolean(ImageReaderShell.PREF_HD, false)
+    private val hdJs: String by lazy { readAsset("JavaScript/image_reader_hd.js") }
     private val extractJs: String by lazy { readAsset("JavaScript/image_reader_mode.js") }
     private val chaptersJs: String by lazy { readAsset("JavaScript/image_reader_chapters.js") }
 
@@ -62,6 +67,7 @@ internal class ImageReaderSession(
     init {
         records[1] = ChapterRecord(1, start.first)
         shown.add(1)
+        if (hdEnabled) main.launch { upgradeShown() }
     }
 
     inner class Bridge {
@@ -95,6 +101,15 @@ internal class ImageReaderSession(
             main.launch {
                 val rec = records[chapterId] ?: return@launch
                 if (!destroyed) visibleCallback(title, rec.ex.url)
+            }
+        }
+
+        @JavascriptInterface
+        fun setHd(enabled: Boolean) {
+            prefs.edit().putBoolean(ImageReaderShell.PREF_HD, enabled).apply()
+            main.launch {
+                hdEnabled = enabled
+                if (enabled) upgradeShown()
             }
         }
 
@@ -151,7 +166,10 @@ internal class ImageReaderSession(
 
     private fun isShownDuplicate(ex: PageExtract): Boolean {
         val first = ex.images.firstOrNull() ?: return true
-        return shown.any { records[it]?.ex?.images?.firstOrNull() == first }
+        return shown.any {
+            val r = records[it]
+            r != null && (r.firstSeen == first || r.ex.images.firstOrNull() == first)
+        }
     }
 
     private suspend fun handleGo(direction: String, chapterId: Int, mode: String) {
@@ -180,7 +198,9 @@ internal class ImageReaderSession(
                 sendError(if (isNext) "noNext" else "noPrev", chapterId)
                 return
             }
-            showChapter(register(ex), mode)
+            val rec = register(ex)
+            showChapter(rec, mode)
+            if (hdEnabled) hdUpgrade(rec)
         } finally {
             busy = false
         }
@@ -203,7 +223,9 @@ internal class ImageReaderSession(
                 sendError("same", 0)
                 return
             }
-            showChapter(register(ex), "replace")
+            val rec = register(ex)
+            showChapter(rec, "replace")
+            if (hdEnabled) hdUpgrade(rec)
         } finally {
             busy = false
         }
@@ -220,6 +242,89 @@ internal class ImageReaderSession(
             }
         }
         dispatch("onChapter", ImageReaderJson.chapter(rec.id, mode, rec.ex))
+    }
+
+    private suspend fun upgradeShown() {
+        var waited = 0
+        while (busy && waited < 120 && !destroyed) {
+            delay(500)
+            waited++
+        }
+        if (busy || destroyed) return
+        busy = true
+        try {
+            for (id in shown.toList()) {
+                val rec = records[id] ?: continue
+                if (!hdEnabled || destroyed) break
+                hdUpgrade(rec)
+            }
+        } finally {
+            busy = false
+        }
+    }
+
+    private suspend fun hdUpgrade(rec: ChapterRecord) {
+        if (rec.hdTried) return
+        val pages = rec.ex.pages
+        val jobs = JSONArray()
+        for (i in pages.indices) {
+            if (i >= rec.ex.images.size) break
+            if (pages[i].isNotEmpty() && jobs.length() < 120) {
+                jobs.put(JSONObject().put("i", i).put("u", pages[i]))
+            }
+        }
+        if (jobs.length() == 0) {
+            rec.hdTried = true
+            return
+        }
+        val wv = ensureLoader()
+        if (!sameUrl(wv.url, rec.ex.url)) loadAndWait(rec.ex.url)
+        if (destroyed) return
+        val payload = jobs.toString().replace("\u2028", "\\u2028").replace("\u2029", "\\u2029")
+        evalLoader(hdJs.replace("%%PAGES%%", payload))
+        val applied = HashSet<Int>()
+        var misses = 0
+        var polls = 0
+        var completed = false
+        while (polls < 150 && !destroyed) {
+            delay(600)
+            polls++
+            val st = ImageReaderParser.decodeJsResult(evalLoader("JSON.stringify(window.__clintHd||null)"))
+            if (st == null) {
+                misses++
+                if (misses >= 3) break
+                continue
+            }
+            misses = 0
+            val res = st.optJSONObject("res")
+            val items = JSONArray()
+            if (res != null) {
+                val imgs = rec.ex.images.toMutableList()
+                val fbs = rec.ex.fallbacks.toMutableList()
+                while (fbs.size < imgs.size) fbs.add("")
+                val keys = res.keys()
+                while (keys.hasNext()) {
+                    val key = keys.next()
+                    val i = key.toIntOrNull() ?: continue
+                    if (i < 0 || i >= imgs.size || !applied.add(i)) continue
+                    val u = res.optString(key)
+                    if (u.isEmpty() || u == imgs[i]) continue
+                    val fb = fbs[i].ifEmpty { imgs[i] }
+                    items.put(JSONObject().put("i", i).put("u", u).put("fb", fb))
+                    fbs[i] = fb
+                    imgs[i] = u
+                }
+                if (items.length() > 0) {
+                    rec.ex = rec.ex.copy(images = imgs, fallbacks = fbs)
+                    dispatch("onUpgrade", JSONObject().put("id", rec.id).put("items", items))
+                }
+            }
+            if (st.optBoolean("done")) {
+                completed = true
+                break
+            }
+        }
+        if (completed) rec.hdTried = true
     }
 
     private suspend fun handleHome(chapterId: Int) {
@@ -280,7 +385,7 @@ internal class ImageReaderSession(
             loadAndWait(from.ex.url)
             extractStable(null, 8)
         }
-        val before = from?.ex?.images?.firstOrNull()
+        val before = from?.firstSeen
         if (!clickTarget(path)) return null
         return extractStable(before, 22)
     }
