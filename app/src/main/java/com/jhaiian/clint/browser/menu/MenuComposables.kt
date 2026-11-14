@@ -153,6 +153,7 @@ internal class BrowserMenuActions(
     val onDesktopMode: () -> Unit,
     val onSettings: () -> Unit,
     val onReaderMode: () -> Unit,
+    val onImageReaderMode: () -> Unit,
     val onDataSaver: () -> Unit,
     val onOpenDataSaverSettings: () -> Unit,
     val onQuiverGuard: () -> Unit,
@@ -262,6 +263,7 @@ internal fun MainActivity.buildMenuActions(dismiss: () -> Unit): BrowserMenuActi
     onDesktopMode = { dismiss(); onMenuDesktopMode() },
     onSettings = { dismiss(); onMenuSettings() },
     onReaderMode = { dismiss(); onMenuReaderMode() },
+    onImageReaderMode = { dismiss(); onMenuImageReaderMode() },
     onDataSaver = { dismiss(); onMenuDataSaver() },
     onOpenDataSaverSettings = { dismiss(); onMenuOpenDataSaverSettings() },
     onQuiverGuard = { dismiss(); onMenuQuiverGuard() },
@@ -495,6 +497,7 @@ private fun MenuItemRowFor(item: CustomizableMenuItem, snapshot: BrowserMenuSnap
         CustomizableMenuItem.BOOKMARKS -> MenuItemRow(item.icon(), stringResource(item.titleRes()), onClick = actions.onBookmarks)
         CustomizableMenuItem.HISTORY -> MenuItemRow(item.icon(), stringResource(item.titleRes()), onClick = actions.onHistory)
         CustomizableMenuItem.READER_MODE -> MenuItemRow(item.icon(), stringResource(item.titleRes()), onClick = actions.onReaderMode)
+        CustomizableMenuItem.IMAGE_READER_MODE -> MenuItemRow(item.icon(), stringResource(item.titleRes()), onClick = actions.onImageReaderMode)
         CustomizableMenuItem.TRANSLATE -> MenuItemRow(
             item.icon(),
             stringResource(item.titleRes()),

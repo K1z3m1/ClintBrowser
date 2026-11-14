@@ -508,6 +508,18 @@
     <string name="menu_bookmarks">Bookmarks</string>
     <string name="menu_history">History</string>
     <string name="reader_mode">Reader Mode</string>
+    <string name="image_reader_mode">Image Reader Mode</string>
+    <string name="image_reader_no_images">No images found on this page</string>
+    <string name="image_reader_prev">Previous chapter</string>
+    <string name="image_reader_next">Next chapter</string>
+    <string name="image_reader_chapters">Chapters</string>
+    <string name="image_reader_loading">Loading…</string>
+    <string name="image_reader_no_next">No next chapter found</string>
+    <string name="image_reader_no_prev">No previous chapter found</string>
+    <string name="image_reader_load_failed">Could not load this chapter</string>
+    <string name="image_reader_no_chapters">No chapter list found</string>
+    <string name="image_reader_open_in_browser">Open in browser</string>
+    <string name="image_reader_auto_next">Auto-load next chapter</string>
 
     <string name="action_ok">OK</string>
     <string name="action_add">Add</string>

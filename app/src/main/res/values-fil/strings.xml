@@ -502,6 +502,18 @@
     <string name="menu_bookmarks">Mga Bookmark</string>
     <string name="menu_history">History</string>
     <string name="reader_mode">Reader Mode</string>
+    <string name="image_reader_mode">Image Reader Mode</string>
+    <string name="image_reader_no_images">Walang nakitang larawan sa page na ito</string>
+    <string name="image_reader_prev">Nakaraang chapter</string>
+    <string name="image_reader_next">Susunod na chapter</string>
+    <string name="image_reader_chapters">Mga chapter</string>
+    <string name="image_reader_loading">Naglo-load…</string>
+    <string name="image_reader_no_next">Walang nakitang susunod na chapter</string>
+    <string name="image_reader_no_prev">Walang nakitang nakaraang chapter</string>
+    <string name="image_reader_load_failed">Hindi ma-load ang chapter na ito</string>
+    <string name="image_reader_no_chapters">Walang nakitang listahan ng chapter</string>
+    <string name="image_reader_open_in_browser">Buksan sa browser</string>
+    <string name="image_reader_auto_next">Awtomatikong i-load ang susunod na chapter</string>
 
     <string name="action_ok">OK</string>
     <string name="action_add">Idagdag</string>
