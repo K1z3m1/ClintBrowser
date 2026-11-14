@@ -32,6 +32,7 @@ import androidx.compose.material.icons.filled.Shield
 import androidx.compose.material.icons.filled.Restore
 import androidx.compose.material.icons.filled.VerticalAlignCenter
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.Memory
 
 import com.jhaiian.clint.ui.ClintSwitch
 import androidx.compose.runtime.Composable
