@@ -6,7 +6,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import android.os.Handler
 import android.os.Looper
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.settings.datasaver.DataSaverMode
 import java.io.File
 import java.net.URL

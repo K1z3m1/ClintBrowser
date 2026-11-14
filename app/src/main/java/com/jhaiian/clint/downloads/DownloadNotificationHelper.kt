@@ -10,7 +10,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.SystemClock
 import androidx.core.app.NotificationCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import java.util.concurrent.ConcurrentHashMap

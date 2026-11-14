@@ -2,7 +2,7 @@ package com.jhaiian.clint.downloads
 
 import android.content.Context
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import java.io.File
 import java.util.Locale

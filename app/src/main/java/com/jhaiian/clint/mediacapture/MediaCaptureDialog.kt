@@ -68,7 +68,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.downloads.formatElapsed
 import com.jhaiian.clint.ui.ClintCheckbox

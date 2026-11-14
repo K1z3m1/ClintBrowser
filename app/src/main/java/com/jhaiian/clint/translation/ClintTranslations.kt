@@ -3,7 +3,7 @@ package com.jhaiian.clint.translation
 import android.content.Context
 import android.content.res.Resources
 import android.net.Uri
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.browser.webview.ClintWebView
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

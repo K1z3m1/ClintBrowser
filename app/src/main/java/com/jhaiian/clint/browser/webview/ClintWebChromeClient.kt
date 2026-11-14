@@ -44,6 +44,7 @@ class ClintWebChromeClient(
 
     override fun onReceivedTitle(view: WebView, title: String) {
         super.onReceivedTitle(view, title)
+        if (view.url == "about:blank") return
         onTitleChanged(title)
         if (isActive()) onUrlChanged(view.url ?: "")
     }

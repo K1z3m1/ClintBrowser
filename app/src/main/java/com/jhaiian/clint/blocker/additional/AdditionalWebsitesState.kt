@@ -1,7 +1,7 @@
 package com.jhaiian.clint.blocker.additional
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 
 object AdditionalWebsitesState {
 

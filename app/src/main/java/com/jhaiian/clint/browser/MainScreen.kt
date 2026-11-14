@@ -264,8 +264,8 @@ internal fun MainScreen(activity: MainActivity, state: MainUiState) {
             com.jhaiian.clint.browser.sheets.ContentPreviewSheet(request = req, activity = activity, onDismiss = { state.contentPreviewRequest = null })
         }
 
-        val hideStatusBarPref = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("hide_status_bar", false) }
-        val hideSystemNavigationPref = remember { androidx.preference.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("hide_system_navigation", false) }
+        val hideStatusBarPref = remember { com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("hide_status_bar", false) }
+        val hideSystemNavigationPref = remember { com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("hide_system_navigation", false) }
         com.jhaiian.clint.ui.listscreen.ConfirmDialogHost(state.confirmDialogConfig, hideStatusBarPref, hideSystemNavigationPref) { state.confirmDialogConfig = null }
         state.conflictDialogRequest?.let { req ->
             com.jhaiian.clint.downloads.DownloadConflictDialog(req, hideStatusBarPref, hideSystemNavigationPref) { state.conflictDialogRequest = null }

@@ -3,7 +3,7 @@ package com.jhaiian.clint.downloads
 import android.content.Context
 import android.content.pm.ServiceInfo
 import android.os.Build
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.ForegroundInfo

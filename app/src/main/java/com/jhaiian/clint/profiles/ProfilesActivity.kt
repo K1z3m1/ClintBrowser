@@ -5,7 +5,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.mutableStateListOf
 import androidx.core.view.WindowCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.base.ClintActivity
 import com.jhaiian.clint.shortcuts.ShortcutStore

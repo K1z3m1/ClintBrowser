@@ -1,7 +1,7 @@
 package com.jhaiian.clint.translation
 
 import android.webkit.JavascriptInterface
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.browser.webview.ClintWebView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

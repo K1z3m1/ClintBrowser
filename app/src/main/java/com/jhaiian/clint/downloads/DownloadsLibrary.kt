@@ -113,7 +113,7 @@ internal fun DownloadsLibraryContent(
                 onToggleGrid = {
                     val grid = !state.libraryGrid
                     state.libraryGrid = grid
-                    androidx.preference.PreferenceManager.getDefaultSharedPreferences(context).edit()
+                    com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(context).edit()
                         .putBoolean(com.jhaiian.clint.settings.downloads.DownloadSettingsKeys.PREF_LIBRARY_GRID, grid).apply()
                 }
             )

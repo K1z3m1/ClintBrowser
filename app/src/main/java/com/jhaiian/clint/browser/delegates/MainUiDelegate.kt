@@ -279,7 +279,9 @@ internal fun MainActivity.updateAddressBar(url: String) {
 }
 
 internal fun MainActivity.onTabUrlUpdated(webView: android.webkit.WebView, url: String) {
-    tabManager.tabs.find { it.webView === webView }?.url = url
+    val owner = tabManager.tabs.find { it.webView === webView }
+    if (owner != null && owner.pendingUrl != null && url == "about:blank") return
+    owner?.url = url
     if (tabManager.activeTab?.webView === webView && !uiState.searchOverlayOpen) {
         updateAddressBar(url)
     }

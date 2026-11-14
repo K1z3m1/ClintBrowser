@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

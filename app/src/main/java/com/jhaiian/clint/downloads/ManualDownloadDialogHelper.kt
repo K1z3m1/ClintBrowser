@@ -3,7 +3,7 @@ package com.jhaiian.clint.downloads
 import android.content.Intent
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.delegates.PREF_BATTERY_OPT_ASKED
 import com.jhaiian.clint.mediacapture.download.StreamContainerFormat

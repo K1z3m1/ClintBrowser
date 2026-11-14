@@ -32,7 +32,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.base.ClintActivity
 import com.jhaiian.clint.R
 import com.jhaiian.clint.BuildConfig
@@ -926,7 +926,7 @@ class MainActivity : ClintActivity(), OverlayHostActivity, SnackbarHostActivity,
             }.getOrNull() ?: return@evaluateJavascript
             val title = json.optString("title", "")
             val content = json.optString("content", "")
-            val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+            val prefs = com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(this)
             val theme = prefs.getString("app_theme", "system") ?: "system"
             val isDark = !ThemeMode.isLight(theme)
             val bgColor = if (isDark) "#121212" else "#ffffff"

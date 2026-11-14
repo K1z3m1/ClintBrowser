@@ -88,6 +88,21 @@ fun SetupScreen(
                         }
                     }
 
+                    if (state.currentPage == 2 || state.currentPage == 3) {
+                        Box(Modifier.fillMaxWidth().padding(bottom = 8.dp), contentAlignment = Alignment.Center) {
+                            SetupPhonePreview(
+                                theme = state.theme,
+                                accent = state.accent,
+                                intensity = state.intensity,
+                                addressBarPosition = state.addressBarPosition,
+                                menuStyle = state.menuStyle,
+                                scrollHideMode = state.scrollHideMode,
+                                hideStatusBar = state.hideStatusBar,
+                                hideSystemNavigation = state.hideSystemNavigation
+                            )
+                        }
+                    }
+
                     AnimatedContent(
                         targetState = state.currentPage,
                         modifier = Modifier.weight(1f).fillMaxWidth(),

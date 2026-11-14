@@ -6,7 +6,7 @@ import android.os.Environment
 import android.os.StatFs
 import android.os.storage.StorageManager
 import android.widget.TextView
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import com.jhaiian.clint.util.DEFAULT_MEASUREMENT_SYSTEM

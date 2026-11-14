@@ -5,7 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.settings.datasaver.DataSaverMode
 import com.jhaiian.clint.util.LocaleHelper
 import com.jhaiian.clint.ui.theme.SystemDarkState

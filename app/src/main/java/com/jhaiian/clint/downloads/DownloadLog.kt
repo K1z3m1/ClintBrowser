@@ -2,7 +2,7 @@ package com.jhaiian.clint.downloads
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import com.jhaiian.clint.util.formatFileSize
 import kotlinx.coroutines.CompletableDeferred

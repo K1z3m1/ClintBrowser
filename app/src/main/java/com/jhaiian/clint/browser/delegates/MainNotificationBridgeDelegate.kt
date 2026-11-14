@@ -6,7 +6,7 @@ import android.app.NotificationManager
 import android.os.Build
 import android.webkit.WebView
 import androidx.core.app.NotificationCompat
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionDatabase
 import com.jhaiian.clint.settings.sitepermissions.SitePermissionManager

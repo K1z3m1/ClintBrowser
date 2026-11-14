@@ -64,7 +64,7 @@ internal fun MainActivity.handleImagePreview(imageUrl: String) {
 }
 
 internal fun MainActivity.handleImageDownload(imageUrl: String, altText: String) {
-    val quickImages = androidx.preference.PreferenceManager.getDefaultSharedPreferences(this)
+    val quickImages = com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(this)
         .getBoolean(com.jhaiian.clint.settings.downloads.DownloadSettingsKeys.PREF_QUICK_DOWNLOAD_IMAGES, com.jhaiian.clint.settings.downloads.DownloadSettingsKeys.DEFAULT_QUICK_DOWNLOAD_IMAGES)
     if (imageUrl.startsWith("data:")) {
         val commaIdx = imageUrl.indexOf(",")

@@ -19,7 +19,7 @@ object SearchHistoryManager {
     fun isSearchEngineUrl(context: Context, url: String): Boolean {
         val host = runCatching { URL(url).host?.lowercase() }.getOrNull() ?: return false
         if (searchEngineHosts.any { host == it || host.endsWith(".$it") }) return true
-        val prefs = androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
+        val prefs = com.jhaiian.clint.util.PreferenceManager.getDefaultSharedPreferences(context)
         return listOf(false, true).any { incognito ->
             val customHost = com.jhaiian.clint.browser.customSearchEngineHost(prefs, incognito)
             customHost != null && (host == customHost || host.endsWith(".$customHost"))

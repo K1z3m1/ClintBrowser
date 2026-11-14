@@ -4,7 +4,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.net.Uri
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.downloads.mega.MegaPaths
 import com.jhaiian.clint.downloads.mega.MegaSource

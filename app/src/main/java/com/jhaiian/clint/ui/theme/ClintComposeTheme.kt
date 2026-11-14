@@ -13,7 +13,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 
 data class ClintColors(
     val background: Color,

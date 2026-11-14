@@ -20,6 +20,9 @@ data class BrowserTab(
 ) {
     var lastActiveAt: Long = System.currentTimeMillis()
 
+    /** WebView state (history + scroll) saved when the page was unloaded by Low RAM mode. */
+    var savedState: android.os.Bundle? = null
+
     init {
         WebProfiles.registerTab(id, profileId)
     }

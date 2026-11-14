@@ -1,7 +1,7 @@
 package com.jhaiian.clint.userscripts
 
 import android.content.Context
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 
 object UserScriptState {
     private const val PREF_ENABLED = "user_scripts_enabled"

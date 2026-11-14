@@ -6,17 +6,15 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.webkit.MimeTypeMap
 import androidx.core.content.ContextCompat
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.BuildConfig
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import java.io.File
 
 internal object DownloadFileHelper {
 
-    private var contentInfoUtil: com.j256.simplemagic.ContentInfoUtil? = null
 
     fun isSafCustomMode(context: Context, item: DownloadItem? = null): Boolean {
         if (item != null) return item.locationMode == DownloadSettingsKeys.MODE_CUSTOM
@@ -116,7 +114,12 @@ internal object DownloadFileHelper {
         var cleaned = name.substringAfterLast('/').substringAfterLast('\\').trim()
         cleaned = cleaned.replace(Regex("[\\\\/:*?\"<>|\\x00-\\x1F]"), "_")
         if (cleaned.isBlank() || cleaned.all { it == '.' }) cleaned = "download"
-        return cleaned.take(200)
+        if (cleaned.length > 200) {
+            val dot = cleaned.lastIndexOf('.')
+            val ext = if (dot > 0 && cleaned.length - dot <= 16) cleaned.substring(dot) else ""
+            cleaned = cleaned.substring(0, 200 - ext.length) + ext
+        }
+        return cleaned
     }
 
     fun uniqueFile(dir: File, name: String): File {
@@ -208,14 +211,33 @@ internal object DownloadFileHelper {
 
     fun extractFilenameFromContentDisposition(cd: String): String? {
         if (cd.isBlank()) return null
-        val fnStar = Regex("""filename\*\s*=\s*(?:[^']*'[^']*')?(.+)""", RegexOption.IGNORE_CASE)
-            .find(cd)?.groupValues?.get(1)?.trim()?.let {
-                java.net.URLDecoder.decode(it.trim('"', '\''), "UTF-8")
-            }
+        val fnStar = Regex("""filename\*\s*=\s*(?:[^';]*'[^';]*')?\s*([^;\r\n]+)""", RegexOption.IGNORE_CASE)
+            .find(cd)?.groupValues?.get(1)?.trim()?.trim('"')?.let(::percentDecodeUtf8)
         if (!fnStar.isNullOrBlank()) return fnStar
-        val fn = Regex("""filename\s*=\s*["']?([^"';\r\n]+)["']?""", RegexOption.IGNORE_CASE)
-            .find(cd)?.groupValues?.get(1)?.trim()
+        val quoted = Regex("""filename\s*=\s*"((?:\\.|[^"\\])*)"""", RegexOption.IGNORE_CASE)
+            .find(cd)?.groupValues?.get(1)?.replace(Regex("""\\(.)"""), "$1")?.trim()
+        if (!quoted.isNullOrBlank()) return quoted
+        val fn = Regex("""filename\s*=\s*([^;\r\n]+)""", RegexOption.IGNORE_CASE)
+            .find(cd)?.groupValues?.get(1)?.trim()?.trim('"', '\'')?.trim()
         return fn?.ifBlank { null }
+    }
+
+    private fun percentDecodeUtf8(value: String): String {
+        val out = java.io.ByteArrayOutputStream(value.length)
+        var i = 0
+        while (i < value.length) {
+            val c = value[i]
+            val hi = if (c == '%' && i + 2 < value.length) Character.digit(value[i + 1], 16) else -1
+            val lo = if (hi >= 0) Character.digit(value[i + 2], 16) else -1
+            if (hi >= 0 && lo >= 0) {
+                out.write(hi * 16 + lo)
+                i += 3
+            } else {
+                out.write(c.toString().toByteArray(Charsets.UTF_8))
+                i++
+            }
+        }
+        return String(out.toByteArray(), Charsets.UTF_8)
     }
 
     fun detectExtFromMagicBytes(b: ByteArray): String? {
@@ -281,25 +303,43 @@ internal object DownloadFileHelper {
         if (at(0) == 0x42 && at(1) == 0x4D) return "bmp"
         if (at(0) == 0x25 && at(1) == 0x50 && at(2) == 0x44 && at(3) == 0x46) return "pdf"
 
-        if (at(0) == 0x50 && at(1) == 0x4B && at(2) == 0x03 && at(3) == 0x04) {
-            return try {
-                if (contentInfoUtil == null) contentInfoUtil = com.j256.simplemagic.ContentInfoUtil()
-                contentInfoUtil?.findMatch(b)?.mimeType?.let { mime ->
-                    MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
-                } ?: "zip"
-            } catch (_: Throwable) { "zip" }
-        }
+        if (at(0) == 0x50 && at(1) == 0x4B && at(2) == 0x03 && at(3) == 0x04) return zipSubtype(b)
 
         if (at(0) == 0x52 && at(1) == 0x61 && at(2) == 0x72 && at(3) == 0x21) return "rar"
         if (at(0) == 0x37 && at(1) == 0x7A && at(2) == 0xBC && at(3) == 0xAF) return "7z"
         if (at(0) == 0x1F && at(1) == 0x8B) return "gz"
 
-        return try {
-            if (contentInfoUtil == null) contentInfoUtil = com.j256.simplemagic.ContentInfoUtil()
-            val info = contentInfoUtil?.findMatch(b) ?: return null
-            val mime = info.mimeType ?: return null
-            MimeTypeMap.getSingleton().getExtensionFromMimeType(mime)
-                ?: mime.substringAfterLast('/').takeIf { it.isNotEmpty() && !it.contains('+') }
-        } catch (_: Throwable) { null }
+        if (at(0) == 0x42 && at(1) == 0x5A && at(2) == 0x68) return "bz2"
+        if (at(0) == 0xFD && at(1) == 0x37 && at(2) == 0x7A && at(3) == 0x58 && at(4) == 0x5A) return "xz"
+        if (at(0) == 0x53 && at(1) == 0x51 && at(2) == 0x4C && at(3) == 0x69) return "sqlite"
+        if (at(0) == 0x7F && at(1) == 0x45 && at(2) == 0x4C && at(3) == 0x46) return "elf"
+        if (at(0) == 0x4D && at(1) == 0x5A) return "exe"
+        if (at(0) == 0x4D && at(1) == 0x54 && at(2) == 0x68 && at(3) == 0x64) return "mid"
+        if (at(0) == 0x38 && at(1) == 0x42 && at(2) == 0x50 && at(3) == 0x53) return "psd"
+        if (at(0) == 0x7B && at(1) == 0x5C && at(2) == 0x72 && at(3) == 0x74 && at(4) == 0x66) return "rtf"
+        if (at(0) == 0xD0 && at(1) == 0xCF && at(2) == 0x11 && at(3) == 0xE0) return "doc"
+        if (at(0) == 0x30 && at(1) == 0x26 && at(2) == 0xB2 && at(3) == 0x75) return "wmv"
+        if (at(0) == 0x77 && at(1) == 0x4F && at(2) == 0x46 && at(3) == 0x46) return "woff"
+        if (at(0) == 0x77 && at(1) == 0x4F && at(2) == 0x46 && at(3) == 0x32) return "woff2"
+        if ((at(0) == 0x49 && at(1) == 0x49 && at(2) == 0x2A && at(3) == 0x00) ||
+            (at(0) == 0x4D && at(1) == 0x4D && at(2) == 0x00 && at(3) == 0x2A)) return "tif"
+        if (at(0) == 0x00 && at(1) == 0x00 && at(2) == 0x01 && at(3) == 0x00) return "ico"
+        if (b.size >= 262 && String(b, 257, 5, Charsets.ISO_8859_1) == "ustar") return "tar"
+        return null
+    }
+    private fun zipSubtype(b: ByteArray): String {
+        val text = String(b, 0, minOf(b.size, 4096), Charsets.ISO_8859_1)
+        return when {
+            text.contains("AndroidManifest.xml") -> "apk"
+            text.contains("word/") -> "docx"
+            text.contains("xl/") -> "xlsx"
+            text.contains("ppt/") -> "pptx"
+            text.contains("application/epub+zip") -> "epub"
+            text.contains("application/vnd.oasis.opendocument.text") -> "odt"
+            text.contains("application/vnd.oasis.opendocument.spreadsheet") -> "ods"
+            text.contains("application/vnd.oasis.opendocument.presentation") -> "odp"
+            text.contains("META-INF/MANIFEST.MF") -> "jar"
+            else -> "zip"
+        }
     }
 }

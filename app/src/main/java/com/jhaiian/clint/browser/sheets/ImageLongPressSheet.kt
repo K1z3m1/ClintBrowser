@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.caverock.androidsvg.SVG
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.MainActivity

@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Save
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.browser.sheets.ActionSheetRow
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys

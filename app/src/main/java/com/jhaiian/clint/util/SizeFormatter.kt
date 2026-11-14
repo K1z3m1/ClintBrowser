@@ -1,7 +1,6 @@
 package com.jhaiian.clint.util
 
 import android.content.Context
-import androidx.preference.PreferenceManager
 import java.util.Locale
 
 const val PREF_MEASUREMENT_SYSTEM = "measurement_system"

@@ -2,7 +2,7 @@ package com.jhaiian.clint.downloads
 
 import android.net.Uri
 import android.widget.Toast
-import androidx.preference.PreferenceManager
+import com.jhaiian.clint.util.PreferenceManager
 import com.jhaiian.clint.R
 import com.jhaiian.clint.settings.downloads.DownloadSettingsKeys
 import com.jhaiian.clint.ui.showClintSnackbar
