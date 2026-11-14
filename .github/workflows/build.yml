@@ -2,9 +2,18 @@ name: Build Clint Browser
 
 on:
   workflow_dispatch:
+    inputs:
+      build_type:
+        description: 'Build type (debug = signed with debug key, installable without secrets)'
+        type: choice
+        options:
+          - release
+          - debug
+        default: release
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  BUILD_TYPE: ${{ inputs.build_type || 'release' }}
 
 jobs:
   build:
@@ -42,72 +51,58 @@ jobs:
         run: chmod +x gradlew
 
       - name: Decode Signing Keystore
+        if: env.BUILD_TYPE == 'release'
         run: |
           printf '%s' "${{ secrets.BASE_64_SIGNING_KEY }}" | tr -d '\n' | base64 -d > app/release_keystore.jks
 
       - name: Create local.properties
+        if: env.BUILD_TYPE == 'release'
         run: printf '%s\n' "${{ secrets.LOCAL_PROPERTIES }}" > local.properties
 
-      - name: Build GitHub Release APKs
-        run: ./gradlew assembleGithubRelease
-
-      - name: List generated APKs
-        run: find app/build/outputs/apk/github/release -name "*.apk" | sort
-
-      - name: Detect ABI split mode
-        id: mode
+      - name: Build GitHub APKs (${{ env.BUILD_TYPE }})
         run: |
-          if ls app/build/outputs/apk/github/release/app-github-arm64-v8a-release.apk 2>/dev/null; then
-            echo "split=true" >> "$GITHUB_OUTPUT"
+          if [ "$BUILD_TYPE" = "debug" ]; then
+            ./gradlew assembleGithubDebug
           else
-            echo "split=false" >> "$GITHUB_OUTPUT"
+            ./gradlew assembleGithubRelease
           fi
 
-      - name: Upload Universal APK (single build)
-        if: steps.mode.outputs.split == 'false'
-        uses: actions/upload-artifact@v7
-        with:
-          name: Clint-Universal
-          path: app/build/outputs/apk/github/release/app-github-release.apk
-          if-no-files-found: error
+      - name: List generated APKs
+        run: find app/build/outputs/apk/github/$BUILD_TYPE -name "*.apk" | sort
 
       - name: Upload Universal APK
-        if: steps.mode.outputs.split == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: Clint-Universal
-          path: app/build/outputs/apk/github/release/app-github-universal-release.apk
+          name: Clint-Universal-${{ env.BUILD_TYPE }}
+          path: |
+            app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-universal-*.apk
+            app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-${{ env.BUILD_TYPE }}.apk
           if-no-files-found: error
 
       - name: Upload arm64-v8a APK
-        if: steps.mode.outputs.split == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: Clint-arm64-v8a
-          path: app/build/outputs/apk/github/release/app-github-arm64-v8a-release.apk
+          name: Clint-arm64-v8a-${{ env.BUILD_TYPE }}
+          path: app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-arm64-v8a-*.apk
           if-no-files-found: warn
 
       - name: Upload armeabi-v7a APK
-        if: steps.mode.outputs.split == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: Clint-armeabi-v7a
-          path: app/build/outputs/apk/github/release/app-github-armeabi-v7a-release.apk
+          name: Clint-armeabi-v7a-${{ env.BUILD_TYPE }}
+          path: app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-armeabi-v7a-*.apk
           if-no-files-found: warn
 
       - name: Upload x86 APK
-        if: steps.mode.outputs.split == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: Clint-x86
-          path: app/build/outputs/apk/github/release/app-github-x86-release.apk
+          name: Clint-x86-${{ env.BUILD_TYPE }}
+          path: app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-x86-*.apk
           if-no-files-found: warn
 
       - name: Upload x86_64 APK
-        if: steps.mode.outputs.split == 'true'
         uses: actions/upload-artifact@v7
         with:
-          name: Clint-x86_64
-          path: app/build/outputs/apk/github/release/app-github-x86_64-release.apk
+          name: Clint-x86_64-${{ env.BUILD_TYPE }}
+          path: app/build/outputs/apk/github/${{ env.BUILD_TYPE }}/app-github-x86_64-*.apk
           if-no-files-found: warn
-          
